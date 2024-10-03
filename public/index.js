@@ -5,7 +5,7 @@ import Score from './Score.js';
 import ItemController from './ItemController.js';
 import './Socket.js'
 import { sendEvent } from './Socket.js';
-import { eEventType } from '/EventType.js';
+import { ePacketId } from '/Packet.js';
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -168,7 +168,7 @@ function reset() {
   gameSpeed = GAME_SPEED_START;
 
   // 게임시작 핸들러ID 2, payload 에는 게임 시작 시간
-  sendEvent(eEventType.GameStart, { timestamp: Date.now() });
+  sendEvent(ePacketId.GameStart, { timestamp: Date.now() });
 }
 
 function setupGameReset() {

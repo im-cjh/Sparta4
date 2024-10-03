@@ -1,4 +1,4 @@
-import { eEventType } from '/EventType.js';
+import { ePacketId } from '/Packet.js';
 import { sendEvent } from './Socket.js';
 
 class Score {
@@ -17,7 +17,7 @@ class Score {
     if (Math.floor(this.score) === 100 && this.stageChange) {
       this.stageChange = false;
   
-      sendEvent(eEventType.MoveStage, { currentStage: 1000, targetStage: 1001 });
+      sendEvent(ePacketId.MoveStage, { currentStage: 1000, targetStage: 1001 });
     }
   }
 
