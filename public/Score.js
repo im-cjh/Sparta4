@@ -1,5 +1,6 @@
 import { ePacketId } from '/Packet.js';
 import { session } from './Session.js';
+import { assetManager } from './AssetManager.js';
 
 class Score {
   score = 0;
@@ -9,6 +10,7 @@ class Score {
   currentStageIndex = 0;
   scorePerSecond = 0;
   targetStageScore = 0;
+  isMaxStage = false;
 
   constructor(ctx, scaleRatio) {
     this.ctx = ctx;
@@ -19,22 +21,25 @@ class Score {
   update(deltaTime) {
     //targetStage에 대한 검증 <- 게임에셋에 존재하는가?
     this.score += deltaTime * this.scorePerSecond * 0.01;
-    if (Math.floor(this.score) === this.targetStageScore && this.stageChange) {
+    if (this.isMaxStage == false && Math.floor(this.score) === this.targetStageScore && this.stageChange) {
       this.stageChange = false;
 
-      this.onStageMove();
+      
       //null이 아니면(스테이지 MAX가 아니라면 이벤트 발생)
-      if(this.targetStageScore){
-        session.sendEvent(ePacketId.MoveStage, { currentStage: 1000, targetStage: 1001 });
+      if(this.targetStageScore != null){
+        session.sendEvent(ePacketId.MoveStage, { currentStage: assetManager.getCurrentStage(this.currentStageIndex), targetStage: assetManager.getTargetStage(this.currentStageIndex) });
       }
+      this.onStageMove();
     }
   }
 
   onStageMove(){
+    this.stageChange = true;
     this.currentStageIndex += 1;
-    this.scorePerSecond = session.getAssetManager().getScorePerSecond(this.currentStageIndex);
-    this.targetStageScore = session.getAssetManager().getTargetStageScore(this.currentStageIndex);
+    this.scorePerSecond = assetManager.getScorePerSecond(this.currentStageIndex);
+    this.targetStageScore = assetManager.getTargetStageScore(this.currentStageIndex);
 
+    session.tmpCurrentStageIndex = this.currentStageIndex; //임시적으로 사용
   }
   getItem(itemId) {
     this.score += 0;
@@ -42,10 +47,16 @@ class Score {
 
   reset() {
     this.score = 0;
+    this.isMaxStage = false;
 
-    this.currentStageIndex = 0;
-    this.scorePerSecond = session.getAssetManager().getScorePerSecond(this.currentStageIndex);
-    this.targetStageScore = session.getAssetManager().getTargetStageScore(this.currentStageIndex+1);
+    session.tmpCurrentStageIndex = 0; //임시적으로 사용
+    try {
+      this.currentStageIndex = 0;
+      this.scorePerSecond = assetManager.getScorePerSecond(this.currentStageIndex);
+      this.targetStageScore = assetManager.getTargetStageScore(this.currentStageIndex);
+    } catch (error) {
+      this.isMaxStage = true;
+    }
   }
 
   setHighScore() {

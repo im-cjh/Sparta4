@@ -1,4 +1,4 @@
-export class AssetManager{
+class AssetManager{
     constructor(){
         this.gameAssets = null
     }
@@ -8,12 +8,43 @@ export class AssetManager{
     }
 
     getScorePerSecond(stageIndex){
-        console.log(this.gameAssets);
-        return this.gameAssets.stages.data[stageIndex].scorePerSecond;
+        let ret = this.gameAssets.stages.data[stageIndex].scorePerSecond;
+        if(!ret){
+            return null;
+        }
+
+        return ret;
     }
 
     getTargetStageScore(stageIndex){
-        let ret = this.gameAssets.stages.data[stageIndex].score;
+        let ret = this.gameAssets.stages.data[stageIndex+1].score;
+        if(!ret){
+            return null;
+        }
+
+        return ret;
+    }
+
+    getCurrentStage(stageIndex){
+        let ret = this.gameAssets.stages.data[stageIndex].id;
+        if(!ret){
+            return null;
+        }
+
+        return ret;
+    }
+
+    getTargetStage(stageIndex){
+        let ret = this.gameAssets.stages.data[stageIndex+1].id;
+        if(!ret){
+            return null;
+        }
+
+        return ret;
+    }
+
+    getItemSpawns(){
+        let ret = this.gameAssets.itemSpawn.data;
         if(!ret){
             return null;
         }
@@ -21,3 +52,5 @@ export class AssetManager{
         return ret;
     }
 }
+
+export const assetManager = new AssetManager();

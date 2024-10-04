@@ -1,5 +1,6 @@
 //유저는 스테이지를 하나씩 올라갈 수 이싿. (1스테이지 -> 2, 2->3)
 
+import { assetManager } from "../../public/AssetManager.js";
 import { getGameAssets } from "../init/assets.js";
 import { stageManager } from "../models/stage.model.js";
 
@@ -25,11 +26,11 @@ export const moveStageHandler = (userId, payload) => {
 
     //점수 검증
     const serverTime = Date.now(); //현재 타임스탬프
-    const elapsedTime = (serverTime - currentStage.timestamp) / 1000;
+    const scorePerSecond = getGameAssets(currentStage.id-1000); //추후에 redis에 stageIndex저장하기
+    const elapsedTime = ((serverTime - currentStage.timestamp)*scorePerSecond) / 1000;
 
     //1스테이지 -> 2스테이지로 넘어가는 과정
     //5는 임의로 정한 오차범위
-
     if(elapsedTime < 10 || elapsedTime > 10.5) {
         console.log(elapsedTime);
         return {status: 'fail', message: "Invalid elapsed time"};
