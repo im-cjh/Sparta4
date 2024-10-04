@@ -1,14 +1,14 @@
 //유저는 스테이지를 하나씩 올라갈 수 이싿. (1스테이지 -> 2, 2->3)
 
 import { getGameAssets } from "../init/assets.js";
-import { getStage, setStage } from "../models/stage.model.js";
+import { stageManager } from "../models/stage.model.js";
 
 //유저는 일정 점수가 되면 다음 스테이지로 이동한다.
 export const moveStageHandler = (userId, payload) => {
     console.log("im called");
 
     //유저의 현재 스테이지 정보
-    let currentStages = getStage(userId);
+    let currentStages = stageManager.getStage(userId);
     if(!currentStages.length){
         return {status: 'fail', message: "No stages found for user"};
     }
@@ -43,6 +43,6 @@ export const moveStageHandler = (userId, payload) => {
     }
 
 
-    setStage(userId, payload.targetStage, serverTime);
+    stageManager.setStage(userId, payload.targetStage, serverTime);
     return {status: "success", stage: payload.targetStage};
 }

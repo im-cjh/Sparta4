@@ -1,10 +1,14 @@
 import { ePacketId } from '/Packet.js';
-import { sendEvent } from './Socket.js';
+import { session } from './Session.js';
 
 class Score {
   score = 0;
   HIGH_SCORE_KEY = 'highScore';
   stageChange = true;
+  
+  currentStageIndex = 0;
+  scorePerSecond = 0;
+  targetStageScore = 0;
 
   constructor(ctx, scaleRatio) {
     this.ctx = ctx;
@@ -13,20 +17,35 @@ class Score {
   }
 
   update(deltaTime) {
-    this.score += deltaTime * 0.01;
-    if (Math.floor(this.score) === 100 && this.stageChange) {
+    //targetStage에 대한 검증 <- 게임에셋에 존재하는가?
+    this.score += deltaTime * this.scorePerSecond * 0.01;
+    if (Math.floor(this.score) === this.targetStageScore && this.stageChange) {
       this.stageChange = false;
-  
-      sendEvent(ePacketId.MoveStage, { currentStage: 1000, targetStage: 1001 });
+
+      this.onStageMove();
+      //null이 아니면(스테이지 MAX가 아니라면 이벤트 발생)
+      if(this.targetStageScore){
+        session.sendEvent(ePacketId.MoveStage, { currentStage: 1000, targetStage: 1001 });
+      }
     }
   }
 
+  onStageMove(){
+    this.currentStageIndex += 1;
+    this.scorePerSecond = session.getAssetManager().getScorePerSecond(this.currentStageIndex);
+    this.targetStageScore = session.getAssetManager().getTargetStageScore(this.currentStageIndex);
+
+  }
   getItem(itemId) {
     this.score += 0;
   }
 
   reset() {
     this.score = 0;
+
+    this.currentStageIndex = 0;
+    this.scorePerSecond = session.getAssetManager().getScorePerSecond(this.currentStageIndex);
+    this.targetStageScore = session.getAssetManager().getTargetStageScore(this.currentStageIndex+1);
   }
 
   setHighScore() {

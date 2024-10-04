@@ -3,9 +3,8 @@ import Ground from './Ground.js';
 import CactiController from './CactiController.js';
 import Score from './Score.js';
 import ItemController from './ItemController.js';
-import './Socket.js'
-import { sendEvent } from './Socket.js';
 import { ePacketId } from '/Packet.js';
+import { session } from './Session.js';
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -168,7 +167,7 @@ function reset() {
   gameSpeed = GAME_SPEED_START;
 
   // 게임시작 핸들러ID 2, payload 에는 게임 시작 시간
-  sendEvent(ePacketId.GameStart, { timestamp: Date.now() });
+  session.sendEvent(ePacketId.GameStart, { timestamp: Date.now() });
 }
 
 function setupGameReset() {
