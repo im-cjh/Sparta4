@@ -1,4 +1,6 @@
 import Item from "./Item.js";
+import { itemDrawer } from "./ItemDrawer.js";
+import { session } from "./Session.js";
 
 class ItemController {
 
@@ -31,7 +33,9 @@ class ItemController {
     }
 
     createItem() {
-        const index = this.getRandomNumber(0, this.itemImages.length - 1);
+        const index = itemDrawer.drawItemId(session.tmpCurrentStageIndex)-1;
+        console.log("index: ", index);
+        //const index = this.getRandomNumber(0, this.itemImages.length - 1);
         const itemInfo = this.itemImages[index];
         const x = this.canvas.width * 1.5;
         const y = this.getRandomNumber(

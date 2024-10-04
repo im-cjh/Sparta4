@@ -1,6 +1,7 @@
 import { Packet } from '/Packet.js';
 import { CLIENT_VERSION } from './Constants.js';
-import { AssetManager } from './AssetManager.js';
+import { assetManager } from './AssetManager.js';
+import { itemDrawer } from './ItemDrawer.js';
 
 /*---------------------------------------------
     [Session 생성자]
@@ -19,8 +20,7 @@ class Session {
     });
     
     this.userId = null;
-    this.assetManager = new AssetManager();
-
+    this.tmpCurrentStageIndex = 0; //추후에 redis사용하기
     this.Init();
   }
 
@@ -46,9 +46,11 @@ class Session {
     });
 
     // GameAssets받기
-    this.socket.on('init', (gameAssets) => {
-        //console.log(gameAssets.stages.data);
-      this.assetManager.setGameAssets(gameAssets);
+    this.socket.on('init', async (gameAssets) => {
+      assetManager.setGameAssets(gameAssets);
+
+      //itemDrawer에 아이템 정보 할당하기
+      await itemDrawer.init();
     });
   }
 
@@ -58,10 +60,6 @@ class Session {
 -------------------------------------------------------------*/
   sendEvent(packetId, payload) {
     this.socket.emit('event', new Packet(packetId, this.userId, CLIENT_VERSION, payload));
-  }
-
-  getAssetManager(){
-    return this.assetManager;
   }
 }
 

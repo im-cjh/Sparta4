@@ -42,3 +42,7 @@ export const loadGameAssets = async()=>{
 export const getGameAssets = ()=>{
     return gameAssets;
 }
+
+export const getScorePerSecond = (stageIndex)=>{
+    return gameAssets.stages.data[stageIndex].scorePerSecond;
+}
