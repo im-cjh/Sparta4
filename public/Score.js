@@ -41,8 +41,17 @@ class Score {
 
     session.tmpCurrentStageIndex = this.currentStageIndex; //임시적으로 사용
   }
+
   getItem(itemId) {
-    this.score += 0;
+      let score = assetManager.getItemScore(itemId);
+      if(score != null){
+        this.score += score;
+      }
+      else {
+        console.log("Invalid ItemId");
+      }
+      
+    console.log(score);
   }
 
   reset() {

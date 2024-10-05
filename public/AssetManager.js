@@ -1,10 +1,16 @@
 class AssetManager{
     constructor(){
         this.gameAssets = null
+
+        this.itemScoreMap = new Map();
     }
 
-    setGameAssets(gameAssets){
+    setGameAssetsAndInit(gameAssets){
         this.gameAssets = gameAssets;
+
+        gameAssets.items.data.forEach(item => {
+            this.itemScoreMap[item.id] = item.score;
+          });
     }
 
     getScorePerSecond(stageIndex){
@@ -45,6 +51,15 @@ class AssetManager{
 
     getItemSpawns(){
         let ret = this.gameAssets.itemSpawn.data;
+        if(!ret){
+            return null;
+        }
+
+        return ret;
+    }
+
+    getItemScore(itemId){
+        let ret = this.itemScoreMap[itemId];
         if(!ret){
             return null;
         }

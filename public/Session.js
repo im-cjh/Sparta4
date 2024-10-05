@@ -47,7 +47,7 @@ class Session {
 
     // GameAssets받기
     this.socket.on('init', async (gameAssets) => {
-      assetManager.setGameAssets(gameAssets);
+      assetManager.setGameAssetsAndInit(gameAssets);
 
       //itemDrawer에 아이템 정보 할당하기
       await itemDrawer.init();
