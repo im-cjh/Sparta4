@@ -2,69 +2,69 @@ class AssetManager{
     constructor(){
         this.gameAssets = null
 
-        this.itemScoreMap = new Map();
+        this.itemMap = new Map();
     }
 
     setGameAssetsAndInit(gameAssets){
         this.gameAssets = gameAssets;
 
-        gameAssets.items.data.forEach(item => {
-            this.itemScoreMap[item.id] = item.score;
-          });
+        this.itemMap = gameAssets.itemMap;
+        console.log(123);
+        console.log(this.itemMap);
     }
 
-    getScorePerSecond(stageIndex){
-        let ret = this.gameAssets.stages.data[stageIndex].scorePerSecond;
-        if(!ret){
+    getScorePerSecondOrNull(stageIndex){
+        try {
+            let ret = this.gameAssets.stages.data[stageIndex].scorePerSecond;
+            return ret;
+        } catch (error) {
             return null;
         }
-
-        return ret;
     }
 
-    getTargetStageScore(stageIndex){
-        let ret = this.gameAssets.stages.data[stageIndex+1].score;
-        if(!ret){
+    getTargetStageScoreOrNUll(stageIndex){
+        try {
+            let ret = this.gameAssets.stages.data[stageIndex+1].score;
+            return ret;
+        } catch (error) {
             return null;
         }
-
-        return ret;
     }
 
-    getCurrentStage(stageIndex){
-        let ret = this.gameAssets.stages.data[stageIndex].id;
-        if(!ret){
+    getCurrentStageOrNull(stageIndex){
+        try {
+            let ret = this.gameAssets.stages.data[stageIndex].id;
+            return ret;
+        } catch (error) {
             return null;
         }
-
-        return ret;
     }
 
-    getTargetStage(stageIndex){
-        let ret = this.gameAssets.stages.data[stageIndex+1].id;
-        if(!ret){
+    getTargetStageOrNull(stageIndex){
+        try {
+            let ret = this.gameAssets.stages.data[stageIndex+1].id;
+            return ret;
+        } catch (error) {
             return null;
         }
-
-        return ret;
     }
 
-    getItemSpawns(){
-        let ret = this.gameAssets.itemSpawn.data;
-        if(!ret){
+    getItemSpawnsOrNull(){
+        try {
+            let ret = this.gameAssets.itemSpawn.data;
+            return ret;
+        } catch (error) {
             return null;
         }
-
-        return ret;
     }
 
-    getItemScore(itemId){
-        let ret = this.itemScoreMap[itemId];
-        if(!ret){
+    getItemScoreOrNull(itemId){
+        try {
+            let ret = this.itemMap[itemId];
+            return ret;
+        } catch (error) {
             return null;
         }
-
-        return ret;
     }
 }
 

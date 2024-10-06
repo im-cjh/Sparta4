@@ -1,6 +1,7 @@
 export const ePacketId = {
     GameStart: 2,
     GameEnd: 3,
+    EarnItem: 4,
     MoveStage: 11,
 };
 

@@ -1,7 +1,8 @@
 import express from 'express';
 import {createServer} from 'http'
 import initSocket from './init/socket.js';
-import { loadGameAssets } from './init/assets.js';
+import { serverAssetManager } from './init/assets.js';
+
 
 
 const app = express();
@@ -20,7 +21,7 @@ server.listen(PORT, async () => {
     console.log(PORT, '포트로 서버가 열렸어요!');
 
     try {
-        const assets = await loadGameAssets();
+        const assets = await serverAssetManager.loadGameAssets();
         console.log(assets);
         console.log("성공");
     } catch (error) {

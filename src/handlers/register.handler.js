@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { handleConnection, handleDisconnect, handlerEvent } from "./helper.js";
-import { getGameAssets } from "../init/assets.js";
+import { serverAssetManager } from "../init/assets.js";
 import { userManager } from "../models/user.model.js";
 
 
@@ -14,7 +14,7 @@ const registerHandler = (io) =>{
         handleConnection(socket, userUUID);
         
         //초기화(Game Assets정보 보내주기)
-        const gameAssets = getGameAssets();
+        const gameAssets = serverAssetManager.getGameAssets();
         socket.emit('init', gameAssets);
 
         //이벤트
