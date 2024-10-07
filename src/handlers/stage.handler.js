@@ -20,6 +20,7 @@ export const moveStageHandler = (userId, payload) => {
 
     //클라이언 vs 서버 비교
     if(currentStage.id !== payload.currentStage){
+        console.log(currentStage.id, payload.currentStage, "stage")
         return {status: "fail", message: "Current stgage mismatch"}
     }
 
