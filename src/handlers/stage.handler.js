@@ -31,7 +31,7 @@ export const moveStageHandler = (userId, payload) => {
 
     // 아이템 점수 추가 고려
     const userItemScore = itemManager.getTotalScore(userId); // 유저가 획득한 아이템의 점수 합산
-    const finalTotalScore = elapsedTime + userItemScore;
+    const finalTotalScore = Math.abs(elapsedTime + userItemScore);
 
     // 1스테이지 -> 2스테이지로 넘어가는 과정
     if (Math.abs(finalTotalScore - 10) > 10) {
