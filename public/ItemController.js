@@ -34,7 +34,7 @@ class ItemController {
 
     createItem() {
         const index = itemDrawer.drawItemId(session.tmpCurrentStageIndex)-1;
-        console.log("index: ", index);
+        console.log("index: ", index, "session.tmpCurrentStageIndex: ", session.tmpCurrentStageIndex);
         //const index = this.getRandomNumber(0, this.itemImages.length - 1);
         const itemInfo = this.itemImages[index];
         const x = this.canvas.width * 1.5;

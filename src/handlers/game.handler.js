@@ -1,10 +1,12 @@
-import { getGameAssets } from "../init/assets.js";
+import { serverAssetManager } from "../init/assets.js";
+import { itemManager } from "../models/item.model.js";
 import { stageManager } from "../models/stage.model.js";
 
 export const gameStart = (uuid, payload)=>{
-    const { stages } = getGameAssets();
+    const { stages } = serverAssetManager.getGameAssets();
 
     stageManager.clearStage(uuid);
+    itemManager.clearItemLog(uuid);
     //stages 배열에서 0번째 = 첫 번째 스테이지
     stageManager.setStage(uuid, stages.data[0].id, payload.timestamp); //편의를 위한 클라가 보낸 timestamp를 사용
     console.log(`Stage: `, stageManager.getStage(uuid));
