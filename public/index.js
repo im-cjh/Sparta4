@@ -3,9 +3,8 @@ import Ground from './Ground.js';
 import CactiController from './CactiController.js';
 import Score from './Score.js';
 import ItemController from './ItemController.js';
-import './Socket.js'
-import { sendEvent } from './Socket.js';
-import { eEventType } from '/EventType.js';
+import { ePacketId } from '/Packet.js';
+import { session } from './Session.js';
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -38,10 +37,12 @@ const CACTI_CONFIG = [
 
 // 아이템
 const ITEM_CONFIG = [
-  { width: 50 / 1.5, height: 50 / 1.5, id: 1, image: 'images/items/pokeball_red.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 2, image: 'images/items/pokeball_yellow.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 3, image: 'images/items/pokeball_purple.png' },
-  { width: 50 / 1.5, height: 50 / 1.5, id: 4, image: 'images/items/pokeball_cyan.png' },
+  { width: 50 / 1.5, height: 50 / 1.5, id: 1, image: 'images/items/pokeball_cyan.png' },
+  { width: 50 / 1.5, height: 50 / 1.5, id: 2, image: 'images/items/pokeball_orange.png' },
+  { width: 50 / 1.5, height: 50 / 1.5, id: 3, image: 'images/items/pokeball_pink.png' },
+  { width: 50 / 1.5, height: 50 / 1.5, id: 4, image: 'images/items/pokeball_purple.png' },
+  { width: 50 / 1.5, height: 50 / 1.5, id: 5, image: 'images/items/pokeball_red.png' },
+  { width: 50 / 1.5, height: 50 / 1.5, id: 6, image: 'images/items/pokeball_yellow.png' },
 ];
 
 // 게임 요소들
@@ -168,7 +169,7 @@ function reset() {
   gameSpeed = GAME_SPEED_START;
 
   // 게임시작 핸들러ID 2, payload 에는 게임 시작 시간
-  sendEvent(eEventType.GameStart, { timestamp: Date.now() });
+  session.sendEvent(ePacketId.GameStart, { timestamp: Date.now() });
 }
 
 function setupGameReset() {

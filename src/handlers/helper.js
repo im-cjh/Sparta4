@@ -1,23 +1,22 @@
 import { CLIENT_VERSION  } from "../constants.js";
-import { getGameAssets } from "../init/assets.js";
-import { createStage, getStage, setStage } from "../models/stage.model.js";
-import { getUser, removeUser } from "../models/user.model.js"
+import { stageManager } from "../models/stage.model.js";
+import { userManager } from "../models/user.model.js"
 import handlerMappings from "./handlerMapping.js";
 
 export const handleConnection = (socket, uuid) =>{
     console.log(`User Connected: ${uuid} with SocketID ${socket.id}`);
-    console.log("Current User:", getUser());
+    console.log("Current User:", userManager.getUser());
 
-    createStage(uuid);
+    stageManager.createStage(uuid);
 
     socket.emit(`connection`, {uuid});
 }
 
 export const handleDisconnect = (socketID, uuid)=> {
     
-    removeUser(socketID);
+    userManager.removeUser(socketID);
     console.log(`User disconnected: ${socketID}`);
-    console.log("Current User: ", getUser());
+    console.log("Current User: ", userManager.getUser());
 }
 
 //스테이지에 따라서 더 높은 점수 획득
@@ -27,18 +26,14 @@ export const handlerEvent = (io, socket, data) =>{
         socket.emit('responese', {status: 'fail', message: "Client version mismatch"});
     }
 
-    const handler = handlerMappings[data.handlerId];
+    console.log(data);
+    const handler = handlerMappings[data.packetId];
     if(!handler) {
-        console.log("data: ", data);
+        console.log("data.packetId: ", data.packetId);
         socket.emit('response', {status: 'fail', message:"Handler not found"});
         return;
     }
 
     const response = handler(data.userId, data.payload);
-
-    // if(response.broadcast){
-    //     io.emit('response', 'broadcast');
-    //     return;
-    // }
     socket.emit('response', response)
 }

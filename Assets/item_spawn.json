@@ -1,0 +1,58 @@
+{
+    "name": "item_spawn",
+    "version": "1.0.0",
+    "data": [
+        {
+            "stage_id": 1000,
+            "items": [{ "item_id": 1, "rarity": 10 }]
+        },
+        {
+            "stage_id": 1001,
+            "items": [
+                { "item_id": 1, "rarity": 20 },
+                { "item_id": 2, "rarity": 10 }
+            ]
+        },
+        {
+            "stage_id": 1002,
+            "items": [
+                { "item_id": 1, "rarity": 10 },
+                { "item_id": 2, "rarity": 20 },
+                { "item_id": 3, "rarity": 10 }
+            ]
+        },
+        {
+            "stage_id": 1003,
+            "items": [
+                { "item_id": 1, "rarity": 20 },
+                { "item_id": 2, "rarity": 20 },
+                { "item_id": 3, "rarity": 30 },
+                { "item_id": 4, "rarity": 10 }
+            ]
+        },
+        {
+            "stage_id": 1004,
+            "items": [
+                { "item_id": 2, "rarity": 10 },
+                { "item_id": 3, "rarity": 20 },
+                { "item_id": 4, "rarity": 30 },
+                { "item_id": 5, "rarity": 10 }
+            ]
+        },
+        {
+            "stage_id": 1005,
+            "items": [
+                { "item_id": 3, "rarity": 20 },
+                { "item_id": 4, "rarity": 20 },
+                { "item_id": 5, "rarity": 20 }
+            ]
+        },
+        {
+            "stage_id": 1006,
+            "items": [
+                { "item_id": 5, "rarity": 10 },
+                { "item_id": 6, "rarity": 20 }
+            ]
+        }
+    ]
+}

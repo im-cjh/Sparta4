@@ -1,44 +1,64 @@
-import fs from 'fs';
-import path, { resolve } from 'path';
-import { fileURLToPath } from 'url';
+import { Utils } from "../Utils.js";
 
-let gameAssets = {};
 
-const __filename = fileURLToPath(import.meta.url); //현재 모듈의 절대 경로
-const __dirname = path.dirname(__filename);
-//최상위 경로 + assets 폴더
-const basePath= path.join(__dirname, "../../Assets");
-console.log(basePath);
+class ServerAssetManager{
+    constructor(){
+        this.gameAssets = {};
+        this.itemMap = new Map();
+        this.stages = new Array();
+        this.itemSpawn = new Array(); //random Access가 빈번히 발생+map으론 다음 스테이지를 유추하기 어려움인해 관련 메소드는 모두 index를 인자로 받음
+    }
 
-//비동기 병렬로 파일을 읽기
-const readFileAsync = (filename) =>{
-    return new Promise((resolve, reject)=>{
-        fs.readFile(path.join(basePath, filename), "utf8", (err, data)=>{
-            if(err){
-                reject(err);
-                return;
-            }
-            resolve(JSON.parse(data));
-        });
-    })
-};
+    async loadGameAssets(){
+        try {
+            const [stages, itemMap, itemSpawn] = await Promise.all([
+                Utils.readFileAsync("stage.json"),
+                Utils.readFileAsync("item.json"),
+                Utils.readFileAsync("item_spawn.json"),
+            ]);
+            
+            //스테이지 자원 로드
+            this.stages = stages;
 
-export const loadGameAssets = async()=>{
-    try {
-        const [stages, items, itemUnlock] = await Promise.all([
-            readFileAsync("stage.json"),
-            readFileAsync("item.json"),
-            readFileAsync("item_unlock.json"),
-        ]);
-    
-        gameAssets = {stages, items, itemUnlock};
-        return gameAssets;  
-    } catch (error) {
-        throw new Error("Faild to load game assets: " + error.message)
+            //아이템 자원 로드
+            this.itemMap["version"] = itemMap.version;
+            itemMap.data.forEach(item => {
+                this.itemMap[item.id] = item.score;
+              });
+            
+            this.itemSpawn = itemSpawn;
+            
+            console.log(this.itemSpawn, "testdd");
+            return {stages: this.stages, itemMap: this.itemMap, itemSpawn: this.itemSpawn};  
+        } catch (error) {
+            throw new Error("Faild to load game assets: " + error.message)
+        }
+    }
+
+    getGameAssets(){
+        return {stages: this.stages, itemMap: this.itemMap, itemSpawn: this.itemSpawn};
+    }
+
+    getScorePerSecond(stageIndex){
+        return this.stages.data[stageIndex].scorePerSecond;
+    }
+
+    getItemScore(itemId){
+        try {
+            return this.itemMap[itemId];
+        } catch (error) {
+            return null;
+        }
+    }
+
+    getItemSpawnOrNull(stageIndex){
+        try {
+            let ret = this.itemSpawn.data[stageIndex].items;
+            return ret;
+        } catch (error) {
+            return null;
+        }
     }
 }
 
-
-export const getGameAssets = ()=>{
-    return gameAssets;
-}
+export const serverAssetManager = new ServerAssetManager();
