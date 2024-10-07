@@ -63,4 +63,4 @@ class Session {
   }
 }
 
-export const session = new Session("http://localhost", 3000);
+export const session = new Session("http://13.209.99.73:3000/", 3000);
