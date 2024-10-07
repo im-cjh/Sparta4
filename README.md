@@ -51,7 +51,7 @@
     ```
 
 2. Stage::`onStageMove()`호출
-     
+
     ```jsx
     /*-------------------------------------------------------------
         [스테이지 이동 후 처리]
@@ -74,7 +74,7 @@
   ```jsx
       class Score {
           update(deltaTime) {
-              this.score += deltaTime * this.scorePerSecond * 0.01;
+              this.score += deltaTime * this.scorePerSecond * 1000;
               if (Math.floor(this.score) === this.targetStageScore && this.stageChange) {
                   this.stageChange = false;
   
@@ -155,122 +155,125 @@
 
 ## **3. 아이템 생성**
 
-1. 일정 시간이 지나면 ItemConstroller::`createItem()`호출
-2. ItemDrawer::`drawItemId()`호출
+1.  일정 시간이 지나면 ItemConstroller::`createItem()`호출
+2.  ItemDrawer::`drawItemId()`호출
 
-    ```
-    /*-------------------------------------------------------------
-        [랜덤 가중치 뽑기]
-    
-        1. 현재 스테이지에 맞는 아이템 풀 가져오기
-        2. null체크
-          2-1. null이 아닐 때: 무작위 itemId 반환
-          2-2. null일 때: null반환
-    -------------------------------------------------------------*/
-    ```
-<details>
-  <summary>📝 등장 아이템 테이블</summary>
+        ```
+        /*-------------------------------------------------------------
+            [랜덤 가중치 뽑기]
 
-  ```cpp
-  Assets/item_spawn.json
-  {
-      "name": "item_spawn",
-      "version": "1.0.0",
-      "data": [
-          {
-              "stage_id": 1001,
-              "items": [{ "item_id": 1, "rarity": 10 }]
-          },
-          {
-              "stage_id": 1002,
-              "items": [
-                  { "item_id": 1, "rarity": 20 },
-                  { "item_id": 2, "rarity": 10 }
-              ]
-          },
-          {
-              "stage_id": 1003,
-              "items": [
-                  { "item_id": 1, "rarity": 30 },
-                  { "item_id": 2, "rarity": 20 },
-                  { "item_id": 3, "rarity": 10 }
-              ]
-          },
-          {
-              "stage_id": 1004,
-              "items": [
-                  { "item_id": 1, "rarity": 40 },
-                  { "item_id": 2, "rarity": 30 },
-                  { "item_id": 3, "rarity": 20 },
-                  { "item_id": 4, "rarity": 10 }
-              ]
-          },
-          {
-              "stage_id": 1005,
-              "items": [
-                  { "item_id": 2, "rarity": 40 },
-                  { "item_id": 3, "rarity": 30 },
-                  { "item_id": 4, "rarity": 20 },
-                  { "item_id": 5, "rarity": 10 }
-              ]
-          },
-          {
-              "stage_id": 1006,
-              "items": [
-                  { "item_id": 3, "rarity": 40 },
-                  { "item_id": 4, "rarity": 30 },
-                  { "item_id": 5, "rarity": 20 },
-                  { "item_id": 6, "rarity": 10 }
-              ]
-          }
-      ]
-  }
+            1. 현재 스테이지에 맞는 아이템 풀 가져오기
+            2. null체크
+              2-1. null이 아닐 때: 무작위 itemId 반환
+              2-2. null일 때: null반환
+        -------------------------------------------------------------*/
+        ```
+
+    <details>
+      <summary>📝 등장 아이템 테이블</summary>
+
+```cpp
+Assets/item_spawn.json
+{
+    "name": "item_spawn",
+    "version": "1.0.0",
+    "data": [
+        {
+            "stage_id": 1001,
+            "items": [{ "item_id": 1, "rarity": 10 }]
+        },
+        {
+            "stage_id": 1002,
+            "items": [
+                { "item_id": 1, "rarity": 20 },
+                { "item_id": 2, "rarity": 10 }
+            ]
+        },
+        {
+            "stage_id": 1003,
+            "items": [
+                { "item_id": 1, "rarity": 30 },
+                { "item_id": 2, "rarity": 20 },
+                { "item_id": 3, "rarity": 10 }
+            ]
+        },
+        {
+            "stage_id": 1004,
+            "items": [
+                { "item_id": 1, "rarity": 40 },
+                { "item_id": 2, "rarity": 30 },
+                { "item_id": 3, "rarity": 20 },
+                { "item_id": 4, "rarity": 10 }
+            ]
+        },
+        {
+            "stage_id": 1005,
+            "items": [
+                { "item_id": 2, "rarity": 40 },
+                { "item_id": 3, "rarity": 30 },
+                { "item_id": 4, "rarity": 20 },
+                { "item_id": 5, "rarity": 10 }
+            ]
+        },
+        {
+            "stage_id": 1006,
+            "items": [
+                { "item_id": 3, "rarity": 40 },
+                { "item_id": 4, "rarity": 30 },
+                { "item_id": 5, "rarity": 20 },
+                { "item_id": 6, "rarity": 10 }
+            ]
+        }
+    ]
+}
 ```
-</details> 
+
+</details>
 
 <details>
   <summary>📝 ItemDrawer::drawItemId() 코드</summary>
 
-  ```jsx
-  /*-------------------------------------------------------------
-      [랜덤 가중치 뽑기]
+```jsx
+/*-------------------------------------------------------------
+    [랜덤 가중치 뽑기]
 
-      1. 현재 스테이지에 맞는 아이템 풀 가져오기
-      2. null체크
-        2-1. null일 때: null반환
-      3. 가중치 총합 구하기
-      4. 가중치 누적합을 통해 아이템 선택
-  -------------------------------------------------------------*/
-      drawItemId(currentStageIndex) {
-          try {
-              // 1. 현재 스테이지에 맞는 아이템 풀 가져오기
-              const itemPool = this.itemPools[currentStageIndex].items;
+    1. 현재 스테이지에 맞는 아이템 풀 가져오기
+    2. null체크
+      2-1. null일 때: null반환
+    3. 가중치 총합 구하기
+    4. 가중치 누적합을 통해 아이템 선택
+-------------------------------------------------------------*/
+    drawItemId(currentStageIndex) {
+        try {
+            // 1. 현재 스테이지에 맞는 아이템 풀 가져오기
+            const itemPool = this.itemPools[currentStageIndex].items;
 
-              console.log(itemPool);
-              // 3. 가중치 총합 구하기
-              let totalWeight = 0;
-              for (let i = 0; i < itemPool.length; i += 1) {
-                  totalWeight += itemPool[i].rarity;
-              }
+            console.log(itemPool);
+            // 3. 가중치 총합 구하기
+            let totalWeight = 0;
+            for (let i = 0; i < itemPool.length; i += 1) {
+                totalWeight += itemPool[i].rarity;
+            }
 
-              // 4. [0, 가중치 총합) 범위의 난수 생성
-              const randomNum = Math.random() * totalWeight;
+            // 4. [0, 가중치 총합) 범위의 난수 생성
+            const randomNum = Math.random() * totalWeight;
 
-              // 5. 가중치 누적합을 통해 아이템 선택
-              let weightSum = 0;
-              for (const item of itemPool) {
-                  weightSum += item.rarity;
-                  if (randomNum < weightSum) {
-                      return item.item_id;
-                  }
-              }
-          } catch (error) {
-              //2-1. null일 때: null반환
-              return null;
-          }
-      }
+            // 5. 가중치 누적합을 통해 아이템 선택
+            let weightSum = 0;
+            for (const item of itemPool) {
+                weightSum += item.rarity;
+                if (randomNum < weightSum) {
+                    return item.item_id;
+                }
+            }
+        } catch (error) {
+            //2-1. null일 때: null반환
+            return null;
+        }
+    }
 ```
-</details> 
+
+</details>
 
 ## **4. 아이템 획득 시 점수 획득**
 
@@ -289,6 +292,7 @@
     ```
 
 -   Score:: `getItem()` 코드
+
     ```jsx
     /*-------------------------------------------------------------
         [아이템 획득]
@@ -312,26 +316,29 @@
         console.log(score);
       }
     ```
+
     <details>
       <summary>📝 AssetManager::getItemScoreOrNull() 코드</summary>
 
-      ```jsx
-      getItemScoreOrNull(itemId) {
-          try {
-              let ret = this.itemMap[itemId];
-              return ret;
-          } catch (error) {
-              return null;
-          }
-      }
+    ```jsx
+    getItemScoreOrNull(itemId) {
+        try {
+            let ret = this.itemMap[itemId];
+            return ret;
+        } catch (error) {
+            return null;
+        }
+    }
     ```
-    </details> 
+
+    </details>
 
 ## **5. 아이템 별 획득 점수 구분**
+
 1. 아이템 획득 패킷 수신, earnItemHandler()호출
-2. 아이템 종류 별 점수 검증 
-    1. 클라가 보내준 itemId와 score를 서버가 가지고 있는 item표와 비교 
-3. 아이템 종류별 획득 스테이지 검증 
-    1. 클라가 보내준 스테이지 번호(id가 아닌 index)로 해당 스테이지에 itemId가 존재하는지 확인 
-4. itemManager에 로그 기록 
+2. 아이템 종류 별 점수 검증
+    1. 클라가 보내준 itemId와 score를 서버가 가지고 있는 item표와 비교
+3. 아이템 종류별 획득 스테이지 검증
+    1. 클라가 보내준 스테이지 번호(id가 아닌 index)로 해당 스테이지에 itemId가 존재하는지 확인
+4. itemManager에 로그 기록
     1. stage변경 시, 아이템 획득으로 얻은 점수+시간 당 점수를 계산해 검증
